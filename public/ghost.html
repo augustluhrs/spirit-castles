@@ -1,0 +1,164 @@
+<style>
+  body {
+    background-color: black;
+    font-size:24px;
+    color: white;
+  }
+  
+  #closet {
+    display: block;
+    margin: auto;
+    margin-top: 10%;
+    height: 50%;
+  }
+  
+  #
+  
+  .choice-text {
+    color: white;
+  }
+  #previousVote,
+  #main {
+    color: white;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  #main div {
+    width: 50%;
+    margin-top: 30px;
+    border-bottom: 1px solid white;
+  }
+  
+  #submit_quiz {
+    display: block;
+  }
+  
+  #hiddenBox {
+    background-color: black;
+    width: 40px;
+    height: 40px;
+  }
+
+  #skull {
+    width: 200px;
+    margin-left: 0px;
+  }
+  
+  #portal {
+    width: 300px;
+    position: fixed;
+    top: 0;
+    left: 30%;
+  }
+  
+  input {
+    //position: fixed;
+    //bottom 10px;
+    //right:10px;
+  }
+  .message-holder {
+    border: 1px solid white;
+    padding: 6px;
+  }
+  
+  #prevPrompt {
+    max-height: 500px;
+    overflow: scroll;
+    width: 100% !important;
+  }
+  
+  #prevPrompt div {
+    width: 100%;
+  }
+  .hidden {
+    display: none !important;
+  }
+  
+  select, button {
+    font-size: 24px;
+  }
+  #nudge {
+    width: 100%;
+  }
+</style>
+
+<div id="quiz" class="hidden">
+  <div class="choice-text">When working, I prefer to:</div>
+  <select id="choice1">
+    <option value="1">Get done as quickly as possible</option>
+    <option value="2">Take your time to do as good a job as possible</option>
+    <option value="3">Find someone else to do it for you</option>
+  </select>
+  <div class="choice-text">When making a choice with others, I:</div>
+  <select id="choice2">
+    <option value="1">Prefer to go along with the group.</option>
+    <option value="2">Work to make consensus together.</option>
+    <option value="3">Make sure my preferred choice is selected, no matter what.</option>
+  </select>
+  <div class="choice-text">As a spirit emperor, I:</div>
+  <select id="choice3">
+    <option value="1">Tend to be lax with my human vessels.</option>
+    <option value="2">Reward those who show their dedication to me.</option>
+    <option value="3">Regard my vessels with a suspicious eye.</option>
+  </select>
+
+  <button id="submit_quiz">Submit</button>
+</div>
+
+<div id="group-select" class="hidden">
+  What group are you in?
+  <select id="group" placeholder="">
+    <option value="red">Red</option>
+    <option value="yellow">Yellow</option>
+    <option value="green">Green</option>
+    <option value="blue">Blue</option>
+  </select>
+  <br />
+  <br />
+  <button id="submit_group">Submit</button>
+</div>
+<div id="voting-stage" class="hidden">
+  You may now vote with the rest of your spirit council to determine whether to return to your followers or punish them.
+  You may select "pleasure" only once, but "displeasure" as many times as you'd like.
+  <button id="displeasure">
+    DISPLEASURE
+  </button>
+  <button id="pleasure">
+    PLEASURE
+  </button>
+</div>
+<div id="main" class="hidden">
+
+  <div id="message-input">
+    
+    <div class="choice-text">SEND A MESSAGE FROM BEYOND</div>
+    <input id="new_prompt"/ >
+    <button id="submit_prompt">Submit</button>
+    <div id="button_status">You may speak to your followers now.</div>
+    </div>
+  <div id="group-text" class="hidden">
+  
+</div>
+  <div id="lastMessage">
+    <div class="message-holder">
+      <strong>Past messages:</strong>
+      <div id="prevPrompt"></div>
+    </div>
+    <div class="message-holder">
+      <strong></strong>Current message:</strong>
+      <span id="currentMessage"></span>
+    </div>
+  </div>
+  <div class="choice-text">
+    NUDGES FROM THE GODS
+    <br />
+    <div id="nudge" class="message-holder"></div>
+  </div>
+</div>
+
+
+<!-- Put your html above these scripts -->
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.min.js"></script>
+<script src="ghost.js"></script>
