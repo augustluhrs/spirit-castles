@@ -3,6 +3,7 @@ let clickCount = 0;
 let myState;
 let sessionID;
 let myGroup;
+let quizCompleted = false
 let socket = io.connect();
 socket.on("connect", function () {
   sessionID = socket.id;
@@ -13,8 +14,9 @@ $("#submit_quiz").on("click", () => {
   const choices = { choice1: $("#choice1").val(), choice2: $("#choice2").val(), choice3: $("#choice3").val(), inPerson: true, id: sessionID };
   console.log("choices: ", choices);
   $("#quiz").hide();
-  $("#messages").removeClass("hidden");
+  //$("#messages").removeClass("hidden");
   socket.emit("quizCompleted", choices);
+  quizCompleted = true
 });
 
 $("#submit_group").on("click", () => {
@@ -35,15 +37,19 @@ socket.on("updateState", function (state) {
   console.log("my group: ", myGroup);
   if (myGroup != undefined) {
     console.log('should show group text')
+    $("#waiting-text").addClass("hidden")
+    $("#messages").removeClass("hidden")
     $("#group-text").removeClass("hidden")
-    $("#group-text").html(`You are in the <span style="color:${myGroup.name}">${myGroup.name} brigade</span>, known for ${myGroup.descriptor}`)
+    $("#group-text").html(`You are in the <span style="color:${myGroup.name}">${myGroup.name} congregation</span>, known for their ${myGroup.descriptor}`)
     $("#currentPrompt").text(myGroup.currentPrompt.prompt);
     let prevVote = myGroup.previousPrompts[myGroup.previousPrompts.length - 1];
     if (prevVote != undefined) {
     $("#prevPrompt").text(prevVote.prompt);
     }
   // GET OBJECTS FROM STATE, DRAW ONES THAT AREN'T ALREADY DRAWN]
-  } else if (state.gameStart) {
+  } else if (quizCompleted && !state.gameStart) {
+      $("#waiting-text").removeClass("hidden")
+  }   else if (state.gameStart) {
     $("#group-select").removeClass("hidden")
   } else {
     $("#quiz").removeClass("hidden")

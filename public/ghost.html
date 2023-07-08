@@ -101,7 +101,8 @@
     width: 100%;
   }
   .intro-text {
-    margin-bottom: 10%;
+    font-size: 22px;
+    margin-bottom: 32px;
     max-width: 50%;
   }
     .main-text {
@@ -126,7 +127,17 @@
 <div class="main-text">
 <div id="quiz" class="hidden">
   <div class="intro-text">
-    You are a Spirit Emperor.
+    You are a <strong>Spirit Emperor</strong>.  Exalted during your life, you have passed into the great beyond. But the Great Cataclysm approaches, and with it your chance to return.
+    <br />
+    You shall <strong>receive instructions from God</strong> on the secrets of the resurrection ritual.
+    <br/>
+    You may choose to <strong>defy God</strong> and design your own ritual, but he will punish your followers.
+    <br />
+    In either case, you must <strong>relay your instructions to your followers</strong>, along with the other members of your <strong>Spirit Council</strong>.
+    <br />
+    When the Great Cataclysm arrives, you will <strong>choose to voice your pleasure or displeasure</strong> with your followers, which will determine the ritual's outcome.
+    <br />
+    Please fill out the quiz below to find your Spirit Council.
   </div>
   <div class="choice-text">I believe my duty on the spirit council is to:</div>
   <select id="choice1">
@@ -152,7 +163,9 @@
 
   <button id="submit_quiz">Submit</button>
 </div>
-
+<div id="sorting-wait" class="hidden">
+  God is determining which spirit council you shall join. Please wait patiently.
+  </div>
 <div id="group-select" class="hidden">
   What group are you in?
   <select id="group" placeholder="">
@@ -179,7 +192,7 @@
 
   <div id="message-input" class="section">
     
-    <div class="prompt-text">SEND A MESSAGE FROM BEYOND</div>
+    <div class="prompt-text">SEND A DECREE FROM BEYOND</div>
     <input id="new_prompt"/ >
     <button id="submit_prompt">Submit</button>
     <div class="prompt-text" id="button_status">You may speak to your followers now.</div>
@@ -189,16 +202,16 @@
 </div>
   <div id="lastMessage" class="section">
     <div class="message-holder">
-      <strong>Past messages:</strong>
+      <strong>Past decrees:</strong>
       <div id="prevPrompt"></div>
     </div>
   </div>
   <div class="message-holder section" id="current-message">
-      <strong></strong>Current message:</strong>
+      <strong></strong>Current decree:</strong>
       <span id="currentMessage"></span>
   </div>
   <div class="choice-text section" id="god-text">
-    MESSAGE FROM THE GODS
+    COMMAND FROM THE GODS
     <br />
     <div id="nudge" class="message-holder"></div>
   </div>

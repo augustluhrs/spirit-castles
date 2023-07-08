@@ -13,6 +13,8 @@ io.sockets.on("connection", newConnection);
 // 1. Intro text language
 // 2. In-person script for August
 // 3. Prebuilt "script" for Brent as God (just a list of things to copy-paste from)
+// in-progress scripts: https://augustsnotion.notion.site/Brent-August-Spirit-Castles-fb0eba2fa84e42739e5a60226929f3ac?pvs=4
+//   --> i wrote a bunch, some can be put on the site vs saying outloud, will edit in the AM
 
 // Nice to haves:
 // 1. "clear" functionality to just reset state - endGame should probably do this
@@ -20,6 +22,11 @@ io.sockets.on("connection", newConnection);
 // ---- this would likely need either a new flag on state or just some "smart" logic
 // e.g. quiz is submitted, start still == false, show waiting screen
 // 3. vote tally screen at end
+//     --> putting new event in feed.js, but need to tie it into secret buttons / state events 
+//         and do the text generation from the votes
+//     --> would be good to have the votes appear one a time on a click so that i can narrate the council's favor
+//         i added divs for each, could make columns and show one at a time?
+//         do we want to add a final screen for god's favor? just a big DISPLEASURE lol
 
 
 let state = {
@@ -30,7 +37,7 @@ let state = {
       members: [],
       currentPrompt: { prompt: "" },
       previousPrompts: [],
-      nudge: "",
+      nudge: { prompt: "your followers must proclaim their daring" },
       descriptor: "bravery.",
       pleasure: 0,
       displeasure: 0
@@ -38,9 +45,9 @@ let state = {
     green: {
       name: "green",
       members: [],
-      currentPrompt: { prompt: "?" },
+      currentPrompt: { prompt: "" },
       previousPrompts: [],
-      nudge: "",
+      nudge: { prompt: "your followers must prepare for conflict" },
       descriptor: "cunning.",
       pleasure: 0,
       displeasure: 0
@@ -50,7 +57,7 @@ let state = {
       members: [],
       currentPrompt: { prompt: "" },
       previousPrompts: [],
-      nudge: "",
+      nudge: { prompt: "your followers must gather gifts for other castles" },
       descriptor: "kindness.",
       pleasure: 0,
       displeasure: 0
@@ -60,7 +67,7 @@ let state = {
       members: [],
       currentPrompt: { prompt: "" },
       previousPrompts: [],
-      nudge: "",
+      nudge: { prompt: "your followers must gather resources" },
       descriptor: "resourcefulness.",
       pleasure: 0,
       displeasure: 0
@@ -74,6 +81,8 @@ let state = {
     unsortedGhosts: [],
   }
 };
+// deep copy of state
+let defaultState = JSON.parse(JSON.stringify(state))
 
 
 function newConnection(socket) {
@@ -83,6 +92,10 @@ function newConnection(socket) {
     // just attaching an empty updateState
     // for condition where game has already started and they reload
    io.emit("updateState", state)
+    io.emit("sendGuestList", state.groups)
+  })
+  socket.on("showVote", function(data) {
+    io.emit("showVote", data)
   })
   //io.emit("updateState", state)
   socket.on("updateState", function (data) {
@@ -112,7 +125,10 @@ function newConnection(socket) {
         state.gameStart = true
         break;
       case "gameEnd":
-        state.gameStart = false
+        console.log('game should be ending')
+        state.gameStart = false;
+        Object.assign(state, ...defaultState)
+      //  state = defaultState;
         break;
       case "voting":
         state.voting = true
@@ -126,8 +142,10 @@ function newConnection(socket) {
         break;
       case "joinGroup":
         console.log('joining group: ', data)
-        state.groups[data.group].members.push(data.member)
-        io.emit("sendGuestList", state.groups);
+        if (data.group !== null){ //ran into weird bug where ghost could click submit with no group selected, crashed server
+          state.groups[data.group].members.push(data.member)
+          io.emit("sendGuestList", state.groups);
+        }
         break;
       case "nudgeFromTheGods":
         for (let group of Object.values(state.groups)) {
@@ -221,16 +239,6 @@ function sortingHat(choices) {
       state.groups.blue.members.push(choices.id);
     } 
   }
-  
-  // if (choices.choice1 == "1") {
-  //   state.groups.red.members.push(choices.id);
-  // } else if (choices.choice2 == "2") {
-  //   state.groups.blue.members.push(choices.id);
-  // } else if (choices.choice3 == "3") {
-  //   state.groups.yellow.members.push(choices.id);
-  // } else {
-  //   state.groups.green.members.push(choices.id);
-  // }
 
   io.emit("sendGuestList", state.groups); 
 

@@ -26,6 +26,7 @@ socket.on("sendGuestList", function (data) {
 //  })
 //})
 socket.on("updateState", function (state) {
+  $("#state").empty()
   for (let group of Object.values(state.groups)) {
     let opt = $(`option:contains(${group.name})`);
     opt.attr("members", group.members);
@@ -35,6 +36,7 @@ socket.on("updateState", function (state) {
     for (let prompt of group.previousPrompts) {
       $("#pastVotes").append(`<div>${prompt.prompt}</div>`);
     }
+    $("#state").append(`<div><div style="font-weight:bold;color:${group.name};">${group.name}</div><div>Prompt: ${group.currentPrompt.prompt}</div> <div> Nudge: ${group.nudge.prompt}</div><div>Pleasure: ${group.pleasure}</div><div>Displeasure: ${group.displeasure}</div></div>`)
   }
   
   //update the "waiting for sort" spans or remove them if sorted
@@ -46,8 +48,8 @@ socket.on("updateState", function (state) {
     document.querySelector("#sortGroups").style.display = "none"
   }
   
-
-  $("#state").text(JSON.stringify(state));
+  
+  $("#state").append(JSON.stringify(state));
 });
 
 $("#createGroups").click(function() {
@@ -63,6 +65,7 @@ $("#endGame").click(function() {
 
 $("#startVoting").click(function() {
   sendSocket("updateState", true, {updateType:"voting"})
+  sendSocket("voteTally", true, {})
 })
 
 $("#sendToAll").click(function () {
@@ -73,6 +76,9 @@ $("#sendToAll").click(function () {
 $("#sendToSelected").click(function () {
   sendSocket("updateState", false, { updateType: "nudgeFromTheGods", prompt: $("#newPrompt").val() });
 });
+$(".showVote").click(function () {
+  sendSocket("showVote", true, {group: $(this).attr('id')})
+})
 
 // button clicks:
 // Update group(s):
@@ -93,7 +99,7 @@ function sendSocket(eventName, targetAll = false, data = {}) {
   if (targetAll) {
     data.target = "all";
   }
-  console.log("sending socket: ", data);
+  console.log("sending socket: ", eventName, data);
   // data.type = eventName;
   socket.emit(eventName, data);
 }
