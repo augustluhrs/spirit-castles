@@ -1,8 +1,13 @@
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@800&family=Orbitron:wght@400;500;600;900&family=Staatliches&display=swap" rel="stylesheet"> 
 <style>
   body {
     background-color: black;
     font-size:24px;
     color: white;
+    font-family: 'Orbitron', sans-serif;
   }
   
   #closet {
@@ -12,7 +17,12 @@
     height: 50%;
   }
   
-  #
+  .credits {
+    position: absolute;
+    bottom: 16px;
+    font-size: 14px;
+    right: 12px;
+  }
   
   .choice-text {
     color: white;
@@ -23,11 +33,17 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    max-height: 100%;
   }
   #main div {
-    width: 50%;
     margin-top: 30px;
-    border-bottom: 1px solid white;
+    padding: 6px;
+  }
+  #message-input, #group-text {
+    width: 48%;
+  }
+  #lastMessage, #god-text, #current-message {
+    width: 30%;
   }
   
   #submit_quiz {
@@ -51,6 +67,9 @@
     top: 0;
     left: 30%;
   }
+  .section {
+    border: 1px solid white;
+  }
   
   input {
     //position: fixed;
@@ -58,18 +77,18 @@
     //right:10px;
   }
   .message-holder {
-    border: 1px solid white;
     padding: 6px;
+    width: 100%;
   }
   
   #prevPrompt {
     max-height: 500px;
     overflow: scroll;
-    width: 100% !important;
   }
   
   #prevPrompt div {
     width: 100%;
+    border-bottom: 1px solid white;
   }
   .hidden {
     display: none !important;
@@ -81,26 +100,54 @@
   #nudge {
     width: 100%;
   }
+  .intro-text {
+    margin-bottom: 10%;
+    max-width: 50%;
+  }
+    .main-text {
+    font-family: "Helvetica", sans-serif;
+  }
+  button {
+    margin: 12px 12px 0 0;
+  }
+  
+  #nudge {
+    font-family: "Cinzel, serif";
+      font-size: 36px;
+  }
+  
+  .prompt-text {
+    border: none !important;
+  }
 </style>
-
+<h1>
+  SPIRIT CASTLES
+</h1>
+<div class="main-text">
 <div id="quiz" class="hidden">
-  <div class="choice-text">When working, I prefer to:</div>
+  <div class="intro-text">
+    You are a Spirit Emperor.
+  </div>
+  <div class="choice-text">I believe my duty on the spirit council is to:</div>
   <select id="choice1">
-    <option value="1">Get done as quickly as possible</option>
-    <option value="2">Take your time to do as good a job as possible</option>
-    <option value="3">Find someone else to do it for you</option>
+    <option value="2">Make sure our future kingdom is safe from the Great Catacylsm</option>
+    <option value="3">Push our followers to be better than the other groups in the region</option>
+    <option value="1">Ensure the council is receiving our due devotion</option>
+    <option value="4">Protect our followers from the more harsh members of the council</option>
   </select>
-  <div class="choice-text">When making a choice with others, I:</div>
+  <div class="choice-text">In my previous human life, I:</div>
   <select id="choice2">
-    <option value="1">Prefer to go along with the group.</option>
-    <option value="2">Work to make consensus together.</option>
-    <option value="3">Make sure my preferred choice is selected, no matter what.</option>
+    <option value="4">Had a large family and strong community ties</option>
+    <option value="2">Was the best at my craft, recognized far and wide</option>
+    <option value="1">Led the extravagant lifestyle that I deserved</option>
+    <option value="3">Never shied away from my responsibilites</option>
   </select>
   <div class="choice-text">As a spirit emperor, I:</div>
   <select id="choice3">
-    <option value="1">Tend to be lax with my human vessels.</option>
-    <option value="2">Reward those who show their dedication to me.</option>
-    <option value="3">Regard my vessels with a suspicious eye.</option>
+    <option value="4">Tend to be lax with my human followers</option>
+    <option value="3">Reward those who show their dedication to me</option>
+    <option value="1">Regard my followers with a suspicious eye</option>
+    <option value="2">Appreciate those who perform quality rites</option>
   </select>
 
   <button id="submit_quiz">Submit</button>
@@ -130,31 +177,35 @@
 </div>
 <div id="main" class="hidden">
 
-  <div id="message-input">
+  <div id="message-input" class="section">
     
-    <div class="choice-text">SEND A MESSAGE FROM BEYOND</div>
+    <div class="prompt-text">SEND A MESSAGE FROM BEYOND</div>
     <input id="new_prompt"/ >
     <button id="submit_prompt">Submit</button>
-    <div id="button_status">You may speak to your followers now.</div>
+    <div class="prompt-text" id="button_status">You may speak to your followers now.</div>
     </div>
-  <div id="group-text" class="hidden">
+  <div id="group-text" class="hidden section">
   
 </div>
-  <div id="lastMessage">
+  <div id="lastMessage" class="section">
     <div class="message-holder">
       <strong>Past messages:</strong>
       <div id="prevPrompt"></div>
     </div>
-    <div class="message-holder">
+  </div>
+  <div class="message-holder section" id="current-message">
       <strong></strong>Current message:</strong>
       <span id="currentMessage"></span>
-    </div>
   </div>
-  <div class="choice-text">
-    NUDGES FROM THE GODS
+  <div class="choice-text section" id="god-text">
+    MESSAGE FROM THE GODS
     <br />
     <div id="nudge" class="message-holder"></div>
   </div>
+</div>
+</div>
+<div class="credits">
+  By August Luhrs & Brent Bailey
 </div>
 
 

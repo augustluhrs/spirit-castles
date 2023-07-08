@@ -36,10 +36,24 @@ socket.on("updateState", function (state) {
       $("#pastVotes").append(`<div>${prompt.prompt}</div>`);
     }
   }
+  
+  //update the "waiting for sort" spans or remove them if sorted
+  if (!state.sortingHat.hasBeenSorted){
+    $("#followersAwaiting").text(state.sortingHat.followersAwaiting);
+    $("#ghostsAwaiting").text(state.sortingHat.ghostsAwaiting);
+  } else if (document.querySelector("#sortGroups").style.display !== "none"){ //idk how jQuery handles elements
+    //so it only hides once
+    document.querySelector("#sortGroups").style.display = "none"
+  }
+  
 
   $("#state").text(JSON.stringify(state));
 });
 
+$("#createGroups").click(function() {
+  // sendSocket("createGroups", true, {updateType: "sorting"})
+  socket.emit("createGroups");
+})
 $("#gameHasStarted").click(function() {
   sendSocket("updateState", true, {updateType: "gameStart"})
 })
