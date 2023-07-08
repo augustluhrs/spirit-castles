@@ -4,6 +4,7 @@ let myState;
 let sessionID;
 let myGroup;
 let socket = io.connect();
+let quizCompleted = false
 socket.on("connect", function () {
   sessionID = socket.id;
 });
@@ -12,8 +13,9 @@ $("#submit_quiz").on("click", () => {
   const choices = { choice1: $("#choice1").val(), choice2: $("#choice2").val(), choice3: $("#choice3").val(), inPerson: false, id: sessionID };
   console.log("choices: ", choices);
   $("#quiz").hide();
-  $("#main").removeClass("hidden");
+  //$("#main").removeClass("hidden");
   socket.emit("quizCompleted", choices);
+  quizCompleted = true
 });
 
 $("#submit_group").on("click", () => {
@@ -21,6 +23,7 @@ $("#submit_group").on("click", () => {
   console.log('submitting group', group)
   socket.emit("updateState", {updateType: "joinGroup", group: group, member: sessionID})
   $("#group-select").hide();
+  quizCompleted = true
   $("#messages").removeClass("hidden");
 })
 $("#pleasure").on("click", () => {
@@ -58,14 +61,16 @@ socket.on("updateState", function (state) {
   console.log("updating state: ", state);
   // update prompt if new prompt coming in
   myState = state;
-  console.log("my group: ", myGroup);
   myGroup = getGroup(myState);
+    console.log("my group: ", myGroup);
   if (myGroup != undefined) {
+    console.log('group undefined')
+    $("#sorting-wait").addClass("hidden")
   $("#main").removeClass("hidden");
   $("select").empty();
   $("#currentMessage").text(myGroup.currentPrompt.prompt);
     $("#group-text").removeClass("hidden")
-    $("#group-text").html(`You are in the <span style="color:${myGroup.name}">${myGroup.name} brigade</span>, known for ${myGroup.descriptor}`)
+    $("#group-text").html(`You are in the <span style="color:${myGroup.name}">${myGroup.name} council</span>, known for their ${myGroup.descriptor}`)
   if (myGroup.previousPrompts.length > 0) {
     console.log("previous prompt adding");
     $("#prevPrompt").empty();
@@ -78,12 +83,14 @@ socket.on("updateState", function (state) {
    } 
     if (myGroup.nudge != "") {
       console.log("nudge: ", myGroup.nudge);
-      $("#nudge").text(myGroup.nudge.prompt);
+      $("#nudge").text(myGroup.nudge.prompt.toUpperCase());
     }
     if (state.voting) {
     $("#main").addClass("hidden")
     $("#voting-stage").removeClass("hidden")
   }
+  } else if (!state.gameStart && myGroup == undefined && quizCompleted) {
+    $("#sorting-wait").removeClass("hidden")
   } else if (state.gameStart) {
     $("#group-select").removeClass("hidden")
   } else {

@@ -15,9 +15,8 @@
   }
   .credits {
     color: white;
-    margin-top: 24px;
+    margin-top: 200px;
     font-size: 18px;
-    position: absolute;
     bottom: 12px;
   }
   #closet {
@@ -75,6 +74,9 @@
   button {
     margin: 12px 12px 0 0;
   }
+  .intro-text {
+    margin-bottom: 24px;
+  }
 </style>
 <h1>
   SPIRIT CASTLES
@@ -82,7 +84,17 @@
 <div class="main-text">
 <div id="quiz" class="hidden">
   <div class="intro-text">
-    You are a servant of the Spirit Emperors.
+    You are a faithful servant of the Spirit Emperors.
+    <br />
+    The Great Cataclysm approaches, and you seek to perform the ritual to resurrect your chosen Spirit Council.
+    <br />
+    You must <strong>follow the instructions</strong> you receive from the Spirit Council.
+    <br />
+    You may <strong>defy them</strong>, but you will be punished.
+    <br />
+    When the cataclysm arrives, your Spirit Council will choose whether they are <strong>pleased</strong> or <strong>displeased</strong> with you. It is in your best interest to please them.
+    <br />
+    Please fill out the quiz below to determine your chosen Spirit Council.
   </div>
   <div class="choice-text">When working, I prefer to:</div>
   <select id="choice1">
@@ -121,18 +133,21 @@
   <br />
   <button id="submit_group">Submit</button>
 </div>
+  <div id="waiting-text" class="hidden">
+    God is determining which Spirit Emperors you serve. Please wait patiently.
+  </div>
 <div id="three" class="hidden">
   <input id="three-object-label" />
   <button id="submit-three">Submit</button>
 </div>
 
 <div id="messages" class="hidden">
-  <h2> MESSAGES FROM THE SPIRIT EMPERORS</h2>
+  <h2> DECREES FROM THE SPIRIT EMPERORS</h2>
   <div id="group-text" class="hidden">
   
 </div>
-  <div class="message-holder"><strong>Last message: </strong><span id="prevPrompt"></span></div>
-  <div class="message-holder"><strong>Current message:</strong> <span id="currentPrompt"></span></div>
+  <div class="message-holder"><strong>Current decree:</strong> <span id="currentPrompt"></span></div>
+  <div class="message-holder"><strong>Last decree: </strong><span id="prevPrompt"></span></div>
 </div>
 </div>
 <div class="credits">
