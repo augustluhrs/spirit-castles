@@ -36,7 +36,7 @@ socket.on("updateState", function (state) {
   if (myGroup != undefined) {
     console.log('should show group text')
     $("#group-text").removeClass("hidden")
-    $("#group-text").text(`You are in the ${myGroup.name} brigade, known for ${myGroup.descriptor}`)
+    $("#group-text").html(`You are in the <span style="color:${myGroup.name}">${myGroup.name} brigade</span>, known for ${myGroup.descriptor}`)
     $("#currentPrompt").text(myGroup.currentPrompt.prompt);
     let prevVote = myGroup.previousPrompts[myGroup.previousPrompts.length - 1];
     if (prevVote != undefined) {

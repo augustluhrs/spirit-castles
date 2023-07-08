@@ -1,8 +1,24 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;900&display=swap" rel="stylesheet"> 
 <style>
   body {
     background-color: black;
     font-size:60px;
     max-width: 100%;
+    color: white;
+    font-family: 'Orbitron', sans-serif;
+
+  }
+  h1 {
+    color:white;
+  }
+  .credits {
+    color: white;
+    margin-top: 24px;
+    font-size: 18px;
+    position: absolute;
+    bottom: 12px;
   }
   #closet {
     display: block;
@@ -53,26 +69,41 @@
     font-size: 44px;
     width:100%;
   }
+  .main-text {
+    font-family: "Helvetica", sans-serif;
+  }
+  button {
+    margin: 12px 12px 0 0;
+  }
 </style>
-
+<h1>
+  SPIRIT CASTLES
+</h1>
+<div class="main-text">
 <div id="quiz" class="hidden">
+  <div class="intro-text">
+    You are a servant of the Spirit Emperors.
+  </div>
   <div class="choice-text">When working, I prefer to:</div>
   <select id="choice1">
-    <option value="1">Get my work done as quickly as I can</option>
-    <option value="2">Take my time to do as good a job as possible</option>
-    <option value="3">Find someone else to do it for me</option>
+    <option value="2">Get my work done as quickly as I can</option>
+    <option value="3">Take my time to do as good a job as possible</option>
+    <option value="1">Find someone else to do it for me</option>
+    <option value="4">Make sure I'm not stepping on anyone's toes</option>
   </select>
   <div class="choice-text">When making a choice with others, I:</div>
   <select id="choice2">
-    <option value="1">Prefer to go along with the group</option>
-    <option value="2">Work to make consensus together</option>
-    <option value="3">Make sure my preferred choice is selected, no matter what</option>
+    <option value="4">Prefer to go along with the group</option>
+    <option value="3">Work to make consensus together</option>
+    <option value="1">Make sure my preferred choice is selected, no matter what</option>
+    <option value="2">Push for what is most practical</option>
   </select>
   <div class="choice-text">When the spirit emperors return, I:</div>
   <select id="choice3">
-    <option value="1">Hope they don't punish me</option>
+    <option value="4">Hope they don't punish me</option>
     <option value="2">Expect to be recognized for my hard work</option>
-    <option value="3">Intend to overthrow them</option>
+    <option value="3">Will receive their judgement with honor</option>
+    <option value="1">Intend to overthrow them</option>
   </select>
   <br />
   <br />
@@ -102,6 +133,10 @@
 </div>
   <div class="message-holder"><strong>Last message: </strong><span id="prevPrompt"></span></div>
   <div class="message-holder"><strong>Current message:</strong> <span id="currentPrompt"></span></div>
+</div>
+</div>
+<div class="credits">
+  By August Luhrs & Brent Bailey
 </div>
 <!-- Put your html above these scripts -->
 <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>

@@ -1,0 +1,93 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;900&display=swap" rel="stylesheet"> 
+<style>
+  body {
+    background-color: black;
+    font-size:30px;
+    max-width: 100%;
+    color: white;
+    font-family: 'Orbitron', sans-serif;
+
+  }
+  h1 {
+    color:white;
+  }
+  .credits {
+    color: white;
+    margin-top: 24px;
+    font-size: 18px;
+    position: absolute;
+    bottom: 12px;
+  }
+  #closet {
+    display: block;
+    margin: auto;
+    margin-top: 10%;
+    height: 50%;
+  }
+  .choice-text,
+  #previousVote,
+  #messages {
+    color: white;
+  }
+  #submit_quiz {
+    display: block;
+  }
+
+  #hiddenBox {
+    background-color: black;
+    width: 40px;
+    height: 40px;
+  }
+  .message-holder {
+    display: block;
+    border: 1px solid white;
+    padding: 6px;
+  }
+
+  #skull {
+    width: 200px;
+    margin-left: 0px;
+  }
+  #portal {
+    width: 300px;
+    position: fixed;
+    top: 0;
+    left: 30%;
+  }
+  input {
+    //position: fixed;
+    //bottom 10px;
+    //right:10px;
+  }
+
+  .hidden {
+    display: none;
+  }
+  .feed {
+    max-height:100%
+  }
+  select, button {
+    font-size: 44px;
+    width:100%;
+  }
+  .main-text {
+    font-family: "Helvetica", sans-serif;
+  }
+  button {
+    margin: 12px 12px 0 0;
+  }
+</style>
+<h1>
+  SPIRIT CASTLES
+</h1>
+<div class="main-text">
+<div id="feed" class="feed">
+
+</div>
+
+<!-- Put your html above these scripts -->
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.min.js"></script>
+<script src="feed.js"></script>

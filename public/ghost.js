@@ -12,7 +12,7 @@ $("#submit_quiz").on("click", () => {
   const choices = { choice1: $("#choice1").val(), choice2: $("#choice2").val(), choice3: $("#choice3").val(), inPerson: false, id: sessionID };
   console.log("choices: ", choices);
   $("#quiz").hide();
-  $("#main").show();
+  $("#main").removeClass("hidden");
   socket.emit("quizCompleted", choices);
 });
 
@@ -65,13 +65,14 @@ socket.on("updateState", function (state) {
   $("select").empty();
   $("#currentMessage").text(myGroup.currentPrompt.prompt);
     $("#group-text").removeClass("hidden")
-    $("#group-text").text(`You are in the ${myGroup.name} brigade, known for ${myGroup.descriptor}`)
+    $("#group-text").html(`You are in the <span style="color:${myGroup.name}">${myGroup.name} brigade</span>, known for ${myGroup.descriptor}`)
   if (myGroup.previousPrompts.length > 0) {
     console.log("previous prompt adding");
     $("#prevPrompt").empty();
     const counts = {};
     for (let prompt of myGroup.previousPrompts) {
       $("#prevPrompt").append(`<div>${prompt.prompt}</div>`);
+      $('#prevPrompt').scrollTop($('#prevPrompt')[0].scrollHeight);
     }
 
    } 

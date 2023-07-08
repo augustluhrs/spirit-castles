@@ -8,14 +8,19 @@ var io = socket(server);
 
 io.sockets.on("connection", newConnection);
 
-//pseudocode map
+//TODOS:
+// Need to have:
+// 1. Intro text language
+// 2. In-person script for August
+// 3. Prebuilt "script" for Brent as God (just a list of things to copy-paste from)
 
-// server: track object location, group membership, individual prompts and voting for groups
-// client: get current group, post objects (and voting options) to server
-// secret: send prompts to all groups, should be able to remove individual submissions if dey bad or something
-// secret can advance to next stage once submissions are in
-// real-time client location ???
-// how to progress through stages????
+// Nice to haves:
+// 1. "clear" functionality to just reset state - endGame should probably do this
+// 2. "calculating" view on quiz submit while waiting for mod to calculate groups
+// ---- this would likely need either a new flag on state or just some "smart" logic
+// e.g. quiz is submitted, start still == false, show waiting screen
+// 3. vote tally screen at end
+
 
 let state = {
   gameStart: false,
@@ -36,7 +41,7 @@ let state = {
       currentPrompt: { prompt: "?" },
       previousPrompts: [],
       nudge: "",
-      descriptor: "opportunism.",
+      descriptor: "cunning.",
       pleasure: 0,
       displeasure: 0
     },
@@ -61,11 +66,22 @@ let state = {
       displeasure: 0
     },
   },
+  sortingHat: {
+    hasBeenSorted: false, //after secret "createsGroups", new quiz results will auto sort and not wait
+    followersAwaiting: 0, //to update secret so we know when there's a quorum
+    ghostsAwaiting: 0,
+    unsortedFollowers: [], //each new quiz submission pushes to these with id and score
+    unsortedGhosts: [],
+  }
 };
+
+
 function newConnection(socket) {
-  console.log("socket.id: ", socket.id);
+  console.log("new connection from socket.id: ", socket.id);
   socket.on("quizCompleted", sortingHat);
   socket.on("guestEnter", function(data) {
+    // just attaching an empty updateState
+    // for condition where game has already started and they reload
    io.emit("updateState", state)
   })
   //io.emit("updateState", state)
@@ -83,7 +99,9 @@ function newConnection(socket) {
         state.objects.push(data.object);
         break;
       case "newPrompt":
-        for (group of Object.values(state.groups)) {
+        console.log('sending new message')
+        io.emit("newMessage", {group: data.target, message: data.prompt})
+        for (let group of Object.values(state.groups)) {
           if (group.name == data.target) {
             group.previousPrompts.push(group.currentPrompt);
             group.currentPrompt = { prompt: data.prompt };
@@ -112,7 +130,7 @@ function newConnection(socket) {
         io.emit("sendGuestList", state.groups);
         break;
       case "nudgeFromTheGods":
-        for (group of Object.values(state.groups)) {
+        for (let group of Object.values(state.groups)) {
           if (data.target == "all") {
             group.nudge = { prompt: data.prompt };
           } else {
@@ -128,38 +146,93 @@ function newConnection(socket) {
     console.log("state updating");
     io.emit("updateState", state);
   });
+  
+  socket.on("createGroups", createGroups);
 
   socket.on("disconnect", removeDisconnected);
   function removeDisconnected() {
     console.log("should be removing: ", socket.id);
-    for (group of Object.values(state.groups)) {
-      console.log("group: ", group);
-      if (group.members.includes(socket.id)) {
-        console.log("includes socket: ", socket.id);
-        const idx = group.members.indexOf(socket.id);
-        state.groups[group.name].members.splice(idx, 1);
+    if (state.sortingHat.hasBeenSorted){
+      for (let group of Object.values(state.groups)) {
+        console.log("group: ", group);
+        if (group.members.includes(socket.id)) {
+          console.log("includes socket: ", socket.id);
+          const idx = group.members.indexOf(socket.id);
+          state.groups[group.name].members.splice(idx, 1);
+        }
+      }
+    } else {
+      //make sure still removing if they leave before we've sorted groups
+      for (let result of state.sortingHat.unsortedFollowers) {
+        if (result.id == socket.id){
+          console.log("includes pre-sorted follower: ", socket.id);
+          const idx = state.sortingHat.unsortedFollowers.indexOf(result);
+          state.sortingHat.unsortedFollowers.splice(idx, 1);
+        }
+        
+      }
+      for (let result of state.sortingHat.unsortedGhosts) {
+        if (result.id == socket.id){
+          console.log("includes pre-sorted ghost: ", socket.id);
+          const idx = state.sortingHat.unsortedGhosts.indexOf(result);
+          state.sortingHat.unsortedGhosts.splice(idx, 1);
+        }
       }
     }
+    
     io.emit("updateState", state);
   }
 }
 function sortingHat(choices) {
   // add members to different groups
-  // not really doing anything with todd's code here but leaving it if it's useful
-  // updateGuestList();
-  // console.log("choices: ", choices);
-  // TODO: ACTUAL SORTING LOGIC INSTEAD OF THIS
-  if (choices.choice1 == "1") {
-    state.groups.red.members.push(choices.id);
-  } else if (choices.choice2 == "2") {
-    state.groups.blue.members.push(choices.id);
-  } else if (choices.choice3 == "3") {
-    state.groups.yellow.members.push(choices.id);
-  } else {
-    state.groups.green.members.push(choices.id);
-  }
 
-  io.emit("sendGuestList", state.groups);
+  //
+  // going to have each client's submit add to a sortable object that
+  // will then get sorted and pushed when we have a quorum of people done
+  // God will push a "create Groups" button and anyone who finishes after that
+  // will just go to their group (not going to worry about evenness beyond first sort)
+  // createGroups() will update state and emit 
+  //
+  // NOTE: shouldn't it be 3-12? they can get a 3 if they select all "1" options. didn't actually do the math just wanna make sure here - Brent
+  // adding scores on spectrum from 4-12 where 4-6: cunning, 7-8: resourcefulness, 9-10: bravery, 11-12: kindness
+  let score = 0;
+  score = parseInt(choices.choice1, 10) + parseInt(choices.choice2, 10) + parseInt(choices.choice3, 10);
+  console.log(choices.id + " score: " + score);
+  
+  if (!state.sortingHat.hasBeenSorted){
+    //check to see if follower or ghost
+    if (choices.inPerson){
+      //add to array to be sorted on createGroups()
+      state.sortingHat.unsortedFollowers.push({id: choices.id, score: score});
+      state.sortingHat.followersAwaiting++;
+    } else {
+      state.sortingHat.unsortedGhosts.push({id: choices.id, score: score});
+      state.sortingHat.ghostsAwaiting++;
+    }
+  } else {
+    // auto sort with no regard to evenness
+    if (score < 7){
+      state.groups.green.members.push(choices.id);
+    } else if (score < 9) {
+      state.groups.yellow.members.push(choices.id);
+    } else if (score < 11) {
+      state.groups.red.members.push(choices.id);
+    } else {
+      state.groups.blue.members.push(choices.id);
+    } 
+  }
+  
+  // if (choices.choice1 == "1") {
+  //   state.groups.red.members.push(choices.id);
+  // } else if (choices.choice2 == "2") {
+  //   state.groups.blue.members.push(choices.id);
+  // } else if (choices.choice3 == "3") {
+  //   state.groups.yellow.members.push(choices.id);
+  // } else {
+  //   state.groups.green.members.push(choices.id);
+  // }
+
+  io.emit("sendGuestList", state.groups); 
 
   //socket.on("guestEnter", function (data) {
   //  socket.join("guests");
@@ -189,8 +262,72 @@ function sortingHat(choices) {
   //  });
   //
 }
+
+function createGroups(){
+  //sort the quiz results by score and then evenly split into the 4 colors
+  let unsortedFollowers = state.sortingHat.unsortedFollowers;
+  let unsortedGhosts = state.sortingHat.unsortedGhosts;
+  
+  // console.log("before sort");
+  // console.log(unsorted);
+  unsortedFollowers.sort((a,b)=>{return a.score - b.score});
+  unsortedGhosts.sort((a,b)=>{return a.score - b.score});
+  // console.log("after sort");
+  // console.log(unsorted);
+  
+  //section off the array into four roughly even sections, spreading followers and ghosts evenly
+  let numGroup = { //just for logging/debugging
+    green: 0,
+    yellow: 0,
+    red: 0,
+    blue: 0
+  }
+  let sectionFollowers = unsortedFollowers.length/4;
+  for (let i = 0; i < unsortedFollowers.length; i++){
+    if (i < sectionFollowers){
+      state.groups.green.members.push(unsortedFollowers[i].id);
+      numGroup.green++;
+    } else if (i < sectionFollowers * 2){
+      state.groups.yellow.members.push(unsortedFollowers[i].id);
+      numGroup.yellow++;
+    } else if (i < sectionFollowers * 3){
+      state.groups.red.members.push(unsortedFollowers[i].id);
+      numGroup.red++;
+    } else {
+      state.groups.blue.members.push(unsortedFollowers[i].id);
+      numGroup.blue++;
+    }
+  }
+  let sectionGhosts = unsortedGhosts.length/4;
+  for (let i = 0; i < unsortedGhosts.length; i++){
+    if (i < sectionGhosts){
+      state.groups.green.members.push(unsortedGhosts[i].id);
+      numGroup.green++;
+    } else if (i < sectionGhosts * 2){
+      state.groups.yellow.members.push(unsortedGhosts[i].id);
+      numGroup.yellow++;
+    } else if (i < sectionGhosts * 3){
+      state.groups.red.members.push(unsortedGhosts[i].id);
+      numGroup.red++;
+    } else {
+      state.groups.blue.members.push(unsortedGhosts[i].id);
+      numGroup.blue++;
+    }
+  }
+  
+  //just checking
+  console.log("sections");
+  console.log(numGroup);
+  
+  state.sortingHat.unsortedFollowers = []; //just to clear up the state log for secret page
+  state.sortingHat.unsortedGhosts = [];
+  state.sortingHat.hasBeenSorted = true;
+  //update all clients
+  io.emit("updateState", state);
+}
+
 function updateGuestList(socket) {
-  // still not sure if i'm gonna do anything with guestlist, but leaving it here just in case
+  // currently just being used for control panel to get list of groups from the server
   getSocketsInRoom("guests").then((guests) => {
     console.log(guests);
     io.emit("sendGuestList", guests);
