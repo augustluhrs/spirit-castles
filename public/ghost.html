@@ -117,8 +117,26 @@
       font-size: 36px;
   }
   
+  #pleasure {
+    font-size: 20px;
+    color: gold;
+    background-color: blue;
+  }
+  #displeasure {
+    font-size: 80px;
+    color: black;
+    background-color: red;
+  }
+  
   .prompt-text {
     border: none !important;
+  }
+  
+  #voting-stage {
+    width: 50%;
+  }
+  #voting-text {
+    margin-bottom: 24px;
   }
 </style>
 <h1>
@@ -131,13 +149,14 @@
     <br />
     You shall <strong>receive instructions from God</strong> on the secrets of the resurrection ritual.
     <br/>
-    You may choose to <strong>defy God</strong> and design your own ritual, but he will punish your followers.
+    You may choose to <strong>defy God</strong> and design your own ritual, but he will <strong>punish</strong> your followers.
     <br />
-    In either case, you must <strong>relay your instructions to your followers</strong>, along with the other members of your <strong>Spirit Council</strong>.
+    In either case, you must <strong>relay your decrees to your followers</strong>, along with the rest of your <strong>Spirit Council</strong>.
+    The connection between the realms is weak, so your followers can only see your council's <strong>last two messages</strong>.
     <br />
     When the Great Cataclysm arrives, you will <strong>choose to voice your pleasure or displeasure</strong> with your followers, which will determine the ritual's outcome.
     <br />
-    Please fill out the quiz below to find your Spirit Council.
+    Please fill out the quiz below to determine your Spirit Council.
   </div>
   <div class="choice-text">I believe my duty on the spirit council is to:</div>
   <select id="choice1">
@@ -167,7 +186,7 @@
   God is determining which spirit council you shall join. Please wait patiently.
   </div>
 <div id="group-select" class="hidden">
-  What group are you in?
+  The trial has begun. Select your group.
   <select id="group" placeholder="">
     <option value="red">Red</option>
     <option value="yellow">Yellow</option>
@@ -179,14 +198,19 @@
   <button id="submit_group">Submit</button>
 </div>
 <div id="voting-stage" class="hidden">
-  You may now vote with the rest of your spirit council to determine whether to return to your followers or punish them.
+  <div id="voting-text">
+      You may now vote with the rest of your spirit council to determine whether to return to your followers or punish them for disobeying your orders.
   You may select "pleasure" only once, but "displeasure" as many times as you'd like.
-  <button id="displeasure">
-    DISPLEASURE
-  </button>
-  <button id="pleasure">
-    PLEASURE
-  </button>
+  </div>
+    <div>
+      <button id="pleasure">
+        PLEASURE
+      </button>
+      <button id="displeasure">
+        DISPLEASURE
+      </button>
+      
+    </div>
 </div>
 <div id="main" class="hidden">
 
@@ -208,6 +232,7 @@
   </div>
   <div class="message-holder section" id="current-message">
       <strong></strong>Current decree:</strong>
+  <br />
       <span id="currentMessage"></span>
   </div>
   <div class="choice-text section" id="god-text">
