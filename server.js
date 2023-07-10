@@ -8,26 +8,21 @@ var io = socket(server);
 
 io.sockets.on("connection", newConnection);
 
-//TODOS:
-// Need to have:
-// 1. Intro text language
-// 2. In-person script for August
-// 3. Prebuilt "script" for Brent as God (just a list of things to copy-paste from)
-// in-progress scripts: https://augustsnotion.notion.site/Brent-August-Spirit-Castles-fb0eba2fa84e42739e5a60226929f3ac?pvs=4
-//   --> i wrote a bunch, some can be put on the site vs saying outloud, will edit in the AM
 
-// Nice to haves:
-// 1. "clear" functionality to just reset state - endGame should probably do this
-// 2. "calculating" view on quiz submit while waiting for mod to calculate groups
-// ---- this would likely need either a new flag on state or just some "smart" logic
-// e.g. quiz is submitted, start still == false, show waiting screen
-// 3. vote tally screen at end
-//     --> putting new event in feed.js, but need to tie it into secret buttons / state events 
-//         and do the text generation from the votes
-//     --> would be good to have the votes appear one a time on a click so that i can narrate the council's favor
-//         i added divs for each, could make columns and show one at a time?
-//         do we want to add a final screen for god's favor? just a big DISPLEASURE lol
-
+// FOR NEXT TIME (BRENT)
+// generally would like to see how this plays out with more time/space
+// 1. generate names for followers "Binky the Fearful"/spirit emperors "Crumbo the Wise"
+// -------- could be fun to do micro-dwarf fortress style assigned attributes (although honestly one-two adjectives gives people plenty to work with)
+// 2. better camera position or bigger space to better delineate followers (or just jerseys or something)
+// 3. sound/visual cue for great cataclysm
+// 4. different possible outcomes for each group - (final outcome felt a bit disconnected from voting)
+// -------- if we have fountain, could have separate taps for each group, and
+// -------- if the bowl/cup for that group overflows, their spirit emperors return
+// -------- or: blow a bubble for each group and the bubble has to be bigger/smaller based on how much displeasure they have
+// 5. (goes with 4) - UI output for diff outcomes, screen says "you have been sacrificed" or "the spirit emperors have returned"
+// 6. Notifications for new messages/commands, sounds/animations etc.
+// 7. probably need a clearer idea of what "punishment" means, although i think some of this would
+// -------- be solved with more time (if one group has stockpiled a resource, punishment is taking it from them)
 
 let state = {
   gameStart: false,
@@ -37,7 +32,7 @@ let state = {
       members: [],
       currentPrompt: { prompt: "" },
       previousPrompts: [],
-      nudge: { prompt: "your followers must proclaim their daring" },
+      nudge: { prompt: "your followers must demonstrate their daring" },
       descriptor: "bravery.",
       pleasure: 0,
       displeasure: 0
@@ -81,8 +76,8 @@ let state = {
     unsortedGhosts: [],
   }
 };
-// deep copy of state
-let defaultState = JSON.parse(JSON.stringify(state))
+// deep copy of initial state for reset
+const defaultState = JSON.parse(JSON.stringify(state))
 
 
 function newConnection(socket) {
@@ -127,7 +122,7 @@ function newConnection(socket) {
       case "gameEnd":
         console.log('game should be ending')
         state.gameStart = false;
-        Object.assign(state, ...defaultState)
+        Object.assign(state, defaultState)
       //  state = defaultState;
         break;
       case "voting":

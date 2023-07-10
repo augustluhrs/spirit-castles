@@ -30,6 +30,7 @@ $("#pleasure").on("click", () => {
   console.log('adding pleasure')
    socket.emit("updateState", {updateType: "pleasure", target: myGroup.name, val: 1})
   $("#pleasure").prop("disabled", true)
+  $("#pleasure").css("background-color", "gray")
 })
 $("#displeasure").on("click", () => {
    socket.emit("updateState", {updateType: "displeasure", target: myGroup.name, val: 1})
@@ -44,6 +45,7 @@ $("#submit_prompt").on("click", function () {
     $("#button_status").text("You may send orders to your followers now.")
   }
   let msg = $("#new_prompt").val();
+  $("#new_prompt").val("")
   socket.emit("updateState", { updateType: "newPrompt", prompt: msg, target: myGroup.name });
   //$("select").empty();
   //$("#main").addClass("hidden");
@@ -92,6 +94,7 @@ socket.on("updateState", function (state) {
   } else if (!state.gameStart && myGroup == undefined && quizCompleted) {
     $("#sorting-wait").removeClass("hidden")
   } else if (state.gameStart) {
+    $("#quiz").addClass("hidden")
     $("#group-select").removeClass("hidden")
   } else {
     $("#quiz").removeClass("hidden")

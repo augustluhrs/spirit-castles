@@ -27,6 +27,7 @@ socket.on("sendGuestList", function (data) {
 //})
 socket.on("updateState", function (state) {
   $("#state").empty()
+  $("#raw-state").empty()
   for (let group of Object.values(state.groups)) {
     let opt = $(`option:contains(${group.name})`);
     opt.attr("members", group.members);
@@ -49,7 +50,7 @@ socket.on("updateState", function (state) {
   }
   
   
-  $("#state").append(JSON.stringify(state));
+  $("#raw-state").append(JSON.stringify(state));
 });
 
 $("#createGroups").click(function() {
